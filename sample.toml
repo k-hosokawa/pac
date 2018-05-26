@@ -1,0 +1,96 @@
+[brew]
+tap = ["homebrew/bundle", "caskroom/cask"]
+cask = ["appcleaner", "mactex", "the-unarchiver", "xquartz"]
+repos = [
+    "autoconf",
+    "bazel",
+    "cmake", "coreutils", "ctags",
+    "direnv", "diff-so-fancy",
+    "ffmpeg", "fish", "fontconfig", "fontforge",
+    "gawk", "git", "glib","graphviz",
+    "hub",
+    "imagemagick",
+    "jq",
+    "lame",
+    "mariadb", "mecab", "mecab-ipadic",
+    "neovim", "nkf", "nmap", "node", "nodebrew",
+    "opencv3", "open-jtalk", "openssl",
+    "pkg-config", "protobuf", "python",
+    "qt",
+    "rbenv", "readline", "reattach-to-user-namespace", "ripgrep",
+    "ruby-build", "rust",
+    "shelcheck", "sqlite", "swig",
+    "terminal-notifier", "tmux", "tree",
+    "w3m", "wget","zsh-completions",
+
+    ]
+    optional_repos = {
+        "go": ["--cross-compile-common"], 
+        "htop": ["--with-ncurses"],
+        "llvm": ["--with-clang"],
+        "zsh": ["--disable-etcdir"], 
+        "cema-sp/tap/alacritty": ["--HEAD"],
+    }
+
+[[go]]
+repos = [
+    "k-hosokawa/powerline-go",
+    "motemen/ghq",
+    "peco/peco",
+    "mattn/memo",
+]
+
+[[source]]
+repo = "simonwhitaker/gibo"
+
+[[source]]
+repo = "b4b4r07/zsh-vimode-visual"
+
+[[source]]
+repo = "zsh-users/zsh-completions"
+
+[[source]]
+repo = "zsh-users/zsh-syntax-highlighting"
+
+[[source]]
+repo = "b4b4r07/enhancd"
+
+[[source]]
+repo = "Valodim/zsh-curl-completion"
+
+[[source]]
+repo = "b4b4r07/zsh-gomi"
+
+[[source]]
+repo = "b4b4r07/zsh-history"
+
+[[source]]
+repo = "marzocchi/zsh-notify"
+
+[[source]]
+repo = "mrowa44/emoji-cli"
+
+[[source]]
+repo = "b4b4r07/emojify"
+
+[[source]]
+repo = "simonwhitaker/gibo"
+
+[[source]]
+repo = "Fakerr/git-recall"
+
+[[source]]
+repo = "jhawthorn/fzy"
+build = "make && PREFIX=$GPMW_HOME make install"
+
+[[source]]
+repo = "saghul/pythonz"
+do_clone = false
+freeze = true
+build = "curl -kL https://raw.github.com/saghul/pythonz/master/pythonz-install | bash"
+
+[[source]]
+repo = "jwilm/alacritty"
+on_os = "darwin"
+build = "cargo --build --release && make app && mv ./target/release/osx/Alacritty.app /Application"
+
