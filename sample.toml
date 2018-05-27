@@ -1,7 +1,7 @@
 [brew]
-tap = ["homebrew/bundle", "caskroom/cask"]
+tap = ["homebrew/bundle", "homebrew/cask", "homebrew/services"]
 cask = ["appcleaner", "mactex", "the-unarchiver", "xquartz"]
-repos = [
+pkgs = [
     "autoconf",
     "bazel",
     "cmake", "coreutils", "ctags",
@@ -22,17 +22,28 @@ repos = [
     "shelcheck", "sqlite", "swig",
     "terminal-notifier", "tmux", "tree",
     "w3m", "wget","zsh-completions",
+]
+[[brew.optionalPkgs]]
+    pkg = "go"
+    args = ["--cross-compile-common"]
 
-    ]
-    optional_repos = {
-        "go": ["--cross-compile-common"], 
-        "htop": ["--with-ncurses"],
-        "llvm": ["--with-clang"],
-        "zsh": ["--disable-etcdir"], 
-        "cema-sp/tap/alacritty": ["--HEAD"],
-    }
+[[brew.optionalPkgs]]
+    pkg = "htop"
+    args = ["--with-ncurses"]
 
-[[go]]
+[[brew.optionalPkgs]]
+    pkg = "llvm"
+    args = ["--with-clang"]
+
+[[brew.optionalPkgs]]
+    pkg = "zsh"
+    args = ["--disable-etcdir"]
+
+[[brew.optionalPkgs]]
+    pkg = "cema-sp/tap/alacritty"
+    args = ["--HEAD"]
+
+[go]
 repos = [
     "k-hosokawa/powerline-go",
     "motemen/ghq",
@@ -40,57 +51,58 @@ repos = [
     "mattn/memo",
 ]
 
-[[source]]
+[src]
+[[src.pkg]]
 repo = "simonwhitaker/gibo"
 
-[[source]]
+[[src.pkg]]
 repo = "b4b4r07/zsh-vimode-visual"
 
-[[source]]
+[[src.pkg]]
 repo = "zsh-users/zsh-completions"
 
-[[source]]
+[[src.pkg]]
 repo = "zsh-users/zsh-syntax-highlighting"
 
-[[source]]
+[[src.pkg]]
 repo = "b4b4r07/enhancd"
 
-[[source]]
+[[src.pkg]]
 repo = "Valodim/zsh-curl-completion"
 
-[[source]]
+[[src.pkg]]
 repo = "b4b4r07/zsh-gomi"
 
-[[source]]
+[[src.pkg]]
 repo = "b4b4r07/zsh-history"
 
-[[source]]
+[[src.pkg]]
 repo = "marzocchi/zsh-notify"
 
-[[source]]
+[[src.pkg]]
 repo = "mrowa44/emoji-cli"
 
-[[source]]
+[[src.pkg]]
 repo = "b4b4r07/emojify"
 
-[[source]]
+[[src.pkg]]
 repo = "simonwhitaker/gibo"
 
-[[source]]
+[[src.pkg]]
 repo = "Fakerr/git-recall"
 
-[[source]]
+[[src.pkg]]
 repo = "jhawthorn/fzy"
 build = "make && PREFIX=$GPMW_HOME make install"
 
-[[source]]
+[[src.pkg]]
 repo = "saghul/pythonz"
-do_clone = false
+doClone = false
 freeze = true
 build = "curl -kL https://raw.github.com/saghul/pythonz/master/pythonz-install | bash"
 
-[[source]]
+[[src.pkg]]
 repo = "jwilm/alacritty"
-on_os = "darwin"
+onOs = "darwin"
 build = "cargo --build --release && make app && mv ./target/release/osx/Alacritty.app /Application"
 
