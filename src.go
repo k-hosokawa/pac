@@ -8,7 +8,24 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/urfave/cli"
 )
+
+type SrcConfig struct {
+	Pkg []SrcPkg `toml:pkg`
+}
+
+type SrcPkg struct {
+	Repo     string    `toml:repo`
+	DoClone  *bool     `toml:doClone`
+	OnOs     *string   `toml:onOs`
+	Freeze   *bool     `toml:freeze`
+	Build    *[]string `toml:build`
+	BuildEnv *[]string `toml:buildEnv`
+	OnApp    *string   `toml:onApp`
+	OnCmd    *string   `toml:onCmd`
+}
 
 func clone(dir_path string, repo string) {
 	if f, err := os.Stat(dir_path); os.IsNotExist(err) || !f.IsDir() {
@@ -99,14 +116,47 @@ func install_src(
 	isFin <- true
 }
 
-func InstallSrc(c *SrcConfig) {
+func InstallSrc(_ *cli.Context) error {
 	wg := new(sync.WaitGroup)
-	isFin := make(chan bool, len(c.Pkg))
-	for _, src := range c.Pkg {
+	isFin := make(chan bool, len(CONFIG.Src.Pkg))
+	for _, src := range CONFIG.Src.Pkg {
 		wg.Add(1)
 		install_src(src, isFin, wg)
 	}
 	wg.Wait()
 	close(isFin)
 	fmt.Println("Installed Packages from Source")
+	return nil
+}
+
+// TODO
+func UpdateSrc(_ *cli.Context) error {
+	return nil
+}
+
+func init() {
+	command := cli.Command{
+		Name:  "src",
+		Usage: "Install or Update Packages from source",
+		Action: func(c *cli.Context) error {
+			if !c.Args().Present() {
+				cli.ShowCommandHelp(c, "src")
+				return nil
+			}
+			return nil
+		},
+		Subcommands: []cli.Command{
+			{
+				Name:   "update",
+				Usage:  "Update Installed Packages",
+				Action: UpdateSrc,
+			},
+			{
+				Name:   "install",
+				Usage:  "Install Packages from source",
+				Action: InstallSrc,
+			},
+		},
+	}
+	APP.Commands = append(APP.Commands, command)
 }

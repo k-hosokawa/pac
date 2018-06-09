@@ -3,15 +3,15 @@ package main
 import (
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 func GetGpmwHome() string {
 	xdg_cache_home := os.Getenv("XDG_CACHE_HOME")
 	if xdg_cache_home == "" {
-		xdg_cache_home = path.Join(os.Getenv("HOME"), ".cache")
+		xdg_cache_home = filepath.Join(os.Getenv("HOME"), ".cache")
 	}
-	return path.Join(xdg_cache_home, "gpmw")
+	return filepath.Join(xdg_cache_home, "gpmw")
 }
 
 func InitDir(path string) {

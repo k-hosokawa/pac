@@ -6,7 +6,13 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sync"
+
+	"github.com/urfave/cli"
 )
+
+type GoConfig struct {
+	Repos []string `toml:repos`
+}
 
 func install_go(pkg string, isFin chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -21,13 +27,13 @@ func install_go(pkg string, isFin chan bool, wg *sync.WaitGroup) {
 	isFin <- true
 }
 
-func InstallGo(c GoConfig) {
+func InstallGo(_ *cli.Context) {
 	os.Setenv("GOPATH", GPMW_HOME)
 	os.Setenv("GOBIN", filepath.Join(GPMW_HOME, "bin"))
 
 	wg := new(sync.WaitGroup)
-	isFin := make(chan bool, len(c.Repos))
-	for _, pkg := range c.Repos {
+	isFin := make(chan bool, len(CONFIG.Go.Repos))
+	for _, pkg := range CONFIG.Go.Repos {
 		wg.Add(1)
 		go install_go(pkg, isFin, wg)
 	}
@@ -35,4 +41,24 @@ func InstallGo(c GoConfig) {
 	wg.Wait()
 	close(isFin)
 	fmt.Println("Installed Go Packages")
+}
+
+func init() {
+	command := cli.Command{
+		Name:  "go",
+		Usage: "Install or Update Go Packages",
+		Subcommands: []cli.Command{
+			{
+				Name:   "update",
+				Usage:  "Update Installed Packages (same as install)",
+				Action: InstallGo,
+			},
+			{
+				Name:   "install",
+				Usage:  "Install Packages from source",
+				Action: InstallGo,
+			},
+		},
+	}
+	APP.Commands = append(APP.Commands, command)
 }

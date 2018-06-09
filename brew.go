@@ -4,8 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/urfave/cli"
+)
+
+var (
+	GPMW_ETC_DIR   string
+	BREW_FILE_PATH string
 )
 
 type BrewConfig struct {
@@ -36,7 +45,7 @@ func (p *OptionalPkg) String() (s string) {
 	return
 }
 
-func (p *BrewConfig) MakeBrewFile(path string) {
+func (p *BrewConfig) MakeBrewFile(_ *cli.Context) error {
 	var arr []string
 	if p.Tap != nil {
 		for _, v := range p.Tap {
@@ -59,7 +68,7 @@ func (p *BrewConfig) MakeBrewFile(path string) {
 		}
 	}
 	// output
-	file, err := os.Create(path)
+	file, err := os.Create(BREW_FILE_PATH)
 	if err != nil {
 		panic(err)
 	}
@@ -70,4 +79,67 @@ func (p *BrewConfig) MakeBrewFile(path string) {
 		fmt.Fprintln(w, line)
 	}
 	w.Flush()
+
+	return err
+}
+
+func UpdateBrew(_ *cli.Context) error {
+	err := exec.Command("brew", "upgrade").Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return err
+}
+
+func InstallBrew(_ *cli.Context) error {
+	prev, err := filepath.Abs(".")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	defer os.Chdir(prev)
+
+	os.Chdir(GPMW_ETC_DIR)
+
+	err = exec.Command("brew", "bundle").Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return err
+}
+
+func init() {
+	GPMW_ETC_DIR = filepath.Join(GPMW_HOME, "etc")
+	InitDir(GPMW_ETC_DIR)
+	BREW_FILE_PATH = filepath.Join(GPMW_ETC_DIR, "Brewfile")
+
+	command := cli.Command{
+		Name:  "brew",
+		Usage: "Make Brewfile, Install or Update Packages Brewfile",
+		Action: func(c *cli.Context) error {
+			if !c.Args().Present() {
+				cli.ShowCommandHelp(c, "go")
+				return nil
+			}
+			return nil
+		},
+		Subcommands: []cli.Command{
+			{
+				Name:   "make",
+				Usage:  "Make Brewfile",
+				Action: CONFIG.Brew.MakeBrewFile,
+			},
+			{
+				Name:   "update",
+				Usage:  "brew upgrade",
+				Action: UpdateBrew,
+			},
+			{
+				Name:   "install",
+				Usage:  "brew install using Brewfile",
+				Action: InstallBrew,
+			},
+		},
+	}
+	APP.Commands = append(APP.Commands, command)
 }

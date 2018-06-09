@@ -1,20 +1,27 @@
 package main
 
-var (
-	GPMW_HOME string
+import (
+	"os"
+
+	"github.com/urfave/cli"
 )
 
-func main() {
-	c := LoadConf("./sample.toml")
-	// c.Brew.MakeBrewFile("./Brewfile")
-	// GetGpmwHome()
-	// home := GetGpmwHome()
-	// fmt.Println(home)
-
+var (
 	GPMW_HOME = GetGpmwHome()
-	// InitDir(GPMW_HOME)
-	// InstallGo(c.Go)
+	APP       = cli.NewApp()
+	CONFIG    = *LoadConf("./sample.toml")
+)
 
-	// fmt.Println(c.Src)
-	InstallSrc(&(c.Src))
+func initialize(_ *cli.Context) error {
+	InitDir(GPMW_HOME)
+	return nil
+}
+
+func main() {
+	APP.Name = "gpmw"
+	APP.Usage = "Package Manager Wrapper"
+	APP.Version = "0.0.1"
+	APP.Before = initialize
+	APP.Setup()
+	APP.Run(os.Args)
 }
