@@ -80,10 +80,10 @@ repo = "b4b4r07/zsh-history"
 repo = "marzocchi/zsh-notify"
 
 [[src.pkg]]
-repo = "mrowa44/emoji-cli"
+repo = "b4b4r07/emoji-cli"
 
 [[src.pkg]]
-repo = "b4b4r07/emojify"
+repo = "mrowa44/emojify"
 
 [[src.pkg]]
 repo = "simonwhitaker/gibo"
@@ -93,16 +93,24 @@ repo = "Fakerr/git-recall"
 
 [[src.pkg]]
 repo = "jhawthorn/fzy"
-build = "make && PREFIX=$GPMW_HOME make install"
+build = ["make"]
+onCmd = "fzy"
 
 [[src.pkg]]
 repo = "saghul/pythonz"
 doClone = false
 freeze = true
-build = "curl -kL https://raw.github.com/saghul/pythonz/master/pythonz-install | bash"
+build = [
+    "curl -kLO https://raw.github.com/saghul/pythonz/master/pythonz-install",
+    "chmod +x pythonz-install",
+    "./pythonz-install",
+]
+buildEnv = ["PYTHONZ_ROOT=__GPMW_HOME__"]
 
 [[src.pkg]]
 repo = "jwilm/alacritty"
 onOs = "darwin"
-build = "cargo --build --release && make app && mv ./target/release/osx/Alacritty.app /Application"
-
+build = [
+    "make app",
+]
+onApp = "target/release/osx/Alacritty.app"

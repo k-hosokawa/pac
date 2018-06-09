@@ -8,8 +8,7 @@ import (
 	"sync"
 )
 
-func install(pkg string, isFin chan bool, wg *sync.WaitGroup) {
-	// wgの数を1つ減らす（この関数が終了した時）
+func install_go(pkg string, isFin chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	// install
 	fmt.Println(pkg)
@@ -22,15 +21,15 @@ func install(pkg string, isFin chan bool, wg *sync.WaitGroup) {
 	isFin <- true
 }
 
-func InstallGo(gpmw_home string, c GoConfig) {
-	os.Setenv("GOPATH", gpmw_home)
-	os.Setenv("GOBIN", filepath.Join(gpmw_home, "bin"))
+func InstallGo(c GoConfig) {
+	os.Setenv("GOPATH", GPMW_HOME)
+	os.Setenv("GOBIN", filepath.Join(GPMW_HOME, "bin"))
 
 	wg := new(sync.WaitGroup)
 	isFin := make(chan bool, len(c.Repos))
 	for _, pkg := range c.Repos {
 		wg.Add(1)
-		go install(pkg, isFin, wg)
+		go install_go(pkg, isFin, wg)
 	}
 
 	wg.Wait()

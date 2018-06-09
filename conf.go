@@ -19,11 +19,14 @@ type SrcConfig struct {
 }
 
 type SrcPkg struct {
-	Repo    string  `toml:repo`
-	DoClone *bool   `toml:doClone`
-	OnOs    *string `toml:onOs`
-	Freeze  *bool   `toml:freeze`
-	Build   *string `toml:build`
+	Repo     string    `toml:repo`
+	DoClone  *bool     `toml:doClone`
+	OnOs     *string   `toml:onOs`
+	Freeze   *bool     `toml:freeze`
+	Build    *[]string `toml:build`
+	BuildEnv *[]string `toml:buildEnv`
+	OnApp    *string   `toml:onApp`
+	OnCmd    *string   `toml:onCmd`
 }
 
 func LoadConf(path string) (config *Config) {

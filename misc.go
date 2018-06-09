@@ -6,15 +6,6 @@ import (
 	"path"
 )
 
-func StrContains(arr []string, s string) bool {
-	for _, v := range arr {
-		if v == s {
-			return true
-		}
-	}
-	return false
-}
-
 func GetGpmwHome() string {
 	xdg_cache_home := os.Getenv("XDG_CACHE_HOME")
 	if xdg_cache_home == "" {
