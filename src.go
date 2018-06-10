@@ -40,12 +40,13 @@ func clone(dir_path string, repo string) {
 	}
 }
 
-func convert_env(env_arr *[]string) (new_arr []string) {
+func convert_env(env_arr *[]string, package_path string) (new_arr []string) {
 	for _, env := range *env_arr {
-		new_arr = append(
-			new_arr,
-			strings.Replace(env, "__GPMW_HOME__", GPMW_HOME, -1),
+		r := strings.NewReplacer(
+			"__GPMW_HOME__", GPMW_HOME,
+			"__PACKAGE_HOME__", package_path,
 		)
+		new_arr = append(new_arr, r.Replace(env))
 	}
 	return
 }
@@ -62,7 +63,7 @@ func build(dir_path string, build_arr *[]string, env_arr *[]string) {
 		cmds := strings.Split(cmd_str, " ")
 		cmd := exec.Command(cmds[0], cmds[1:]...)
 		if env_arr != nil {
-			new_arr := convert_env(env_arr)
+			new_arr := convert_env(env_arr, dir_path)
 			cmd.Env = append(os.Environ(), new_arr...)
 		}
 		err := cmd.Run()
