@@ -118,6 +118,7 @@ build = [
 ]
 buildEnv = ["PYTHONZ_ROOT=__PACKAGE_HOME__"]
 onCmd = "bin/pythonz"
+onZshSource = "etc/bashrc"
 
 [[src.pkg]]
 repo = "jwilm/alacritty"
@@ -131,3 +132,10 @@ onApp = "target/release/osx/Alacritty.app"
 repo = "b4b4r07/peco-tmux.sh"
 onCmd = "peco-tmux.sh"
 renameTo = "peco-tmux"
+
+[[src.pkg]]
+repo = "hokaccha/nodebrew"
+build = [
+    "wget git.io/nodebrew",
+    "perl nodebrew setup",
+]

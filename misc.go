@@ -6,6 +6,14 @@ import (
 	"path/filepath"
 )
 
+func GetGpmwConfig() string {
+	xdg_config_home := os.Getenv("XDG_CONFIG_HOME")
+	if xdg_config_home == "" {
+		xdg_config_home = filepath.Join(os.Getenv("HOME"), ".config")
+	}
+	return filepath.Join(xdg_config_home, "gpmw", "config.toml")
+}
+
 func GetGpmwHome() string {
 	xdg_cache_home := os.Getenv("XDG_CACHE_HOME")
 	if xdg_cache_home == "" {

@@ -9,7 +9,7 @@ import (
 var (
 	GPMW_HOME = GetGpmwHome()
 	APP       = cli.NewApp()
-	CONFIG    = *LoadConf("./sample.toml")
+	CONFIG    = *LoadConf(GetGpmwConfig())
 )
 
 func initialize(_ *cli.Context) error {
