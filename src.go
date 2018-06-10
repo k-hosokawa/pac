@@ -74,14 +74,22 @@ func build(dir_path string, build_arr *[]string, env_arr *[]string) {
 }
 
 func install_bin(dir_path string, cmd *string) {
-	bin_path := filepath.Join(dir_path, *cmd)
+	bin_path, err := filepath.Abs(filepath.Join(dir_path, *cmd))
+	if err != nil {
+		fmt.Println(err)
+	}
 	if err := os.Chmod(bin_path, 0755); err != nil {
 		fmt.Println(err)
 	}
-	if err := os.Rename(
-		bin_path,
-		filepath.Join(GPMW_HOME, "bin", *cmd),
-	); err != nil {
+	sympath := filepath.Join(GPMW_HOME, "bin", filepath.Base(*cmd))
+	if _, err := os.Stat(sympath); !os.IsNotExist(err) {
+		err = os.Remove(sympath)
+		if err != nil {
+			fmt.Println(nil)
+		}
+	}
+
+	if err := os.Symlink(bin_path, sympath); err != nil {
 		fmt.Println(err)
 	}
 }
