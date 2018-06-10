@@ -94,20 +94,21 @@ renameTo = "peco-tmux"
 ```sh
 $ pac src install
 ```
+
 ### brew
-    * make
-        + make Brewfile
-    * update
-        + brew upgrade
-    * install
-        + brew bundle
+* make
+    + make Brewfile
+* update
+    + brew upgrade
+* install
+    + brew bundle
 
 ### go
-    * install
-        + go get -u repo
-    * update
-        + same as install
+* install
+    + go get -u repo
+* update
+    + same as install
 
 ### src
-    * install
-    * update
+* install
+* update
