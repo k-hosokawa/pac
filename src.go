@@ -32,7 +32,8 @@ type SrcPkg struct {
 	OnApp       *string   `toml:onApp`
 	OnCmd       *string   `toml:onCmd`
 	OnZshSource *string   `toml:onZshSource`
-	OnZshComp   *string   `toml:OnZshComp`
+	OnZshComp   *string   `toml:onZshComp`
+	RenameTo    *string   `toml:renameTo`
 }
 
 func clone(dir_path string, repo string) {
@@ -81,7 +82,7 @@ func build(dir_path string, build_arr *[]string, env_arr *[]string) {
 	}
 }
 
-func install_bin(dir_path string, cmd *string) {
+func install_bin(dir_path string, cmd *string, rename *string) {
 	bin_path, err := filepath.Abs(filepath.Join(dir_path, *cmd))
 	if err != nil {
 		fmt.Println(err)
@@ -89,7 +90,11 @@ func install_bin(dir_path string, cmd *string) {
 	if err := os.Chmod(bin_path, 0755); err != nil {
 		fmt.Println(err)
 	}
-	sympath := filepath.Join(GPMW_HOME, "bin", filepath.Base(*cmd))
+	cmd_path := *cmd
+	if rename != nil {
+		cmd_path = *rename
+	}
+	sympath := filepath.Join(GPMW_HOME, "bin", filepath.Base(cmd_path))
 	if err = RmIfExist(sympath); err != nil {
 		fmt.Println(nil)
 	}
@@ -161,7 +166,7 @@ func install_src(src SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
 	}
 
 	if src.OnCmd != nil {
-		install_bin(dir_path, src.OnCmd)
+		install_bin(dir_path, src.OnCmd, src.RenameTo)
 	}
 
 	if src.OnZshComp != nil {

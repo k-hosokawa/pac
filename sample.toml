@@ -126,3 +126,8 @@ build = [
     "make app",
 ]
 onApp = "target/release/osx/Alacritty.app"
+
+[[src.pkg]]
+repo = "b4b4r07/peco-tmux.sh"
+onCmd = "peco-tmux.sh"
+renameTo = "peco-tmux"
