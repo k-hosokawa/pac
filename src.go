@@ -52,7 +52,7 @@ func clone(dir_path string, repo string) {
 func convert_env(env_arr *[]string, package_path string) (new_arr []string) {
 	for _, env := range *env_arr {
 		r := strings.NewReplacer(
-			"__GPMW_HOME__", GPMW_HOME,
+			"__PAC_HOME__", PAC_HOME,
 			"__PACKAGE_HOME__", package_path,
 		)
 		new_arr = append(new_arr, r.Replace(env))
@@ -94,7 +94,7 @@ func install_bin(dir_path string, cmd *string, rename *string) {
 	if rename != nil {
 		cmd_path = *rename
 	}
-	sympath := filepath.Join(GPMW_HOME, "bin", filepath.Base(cmd_path))
+	sympath := filepath.Join(PAC_HOME, "bin", filepath.Base(cmd_path))
 	if err = RmIfExist(sympath); err != nil {
 		fmt.Println(nil)
 	}
@@ -153,7 +153,7 @@ func install_src(src SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
 			return
 		}
 	}
-	dir_path := filepath.Join(GPMW_HOME, "src", "github.com", src.Repo)
+	dir_path := filepath.Join(PAC_HOME, "src", "github.com", src.Repo)
 
 	if src.DoClone == nil || *(src.DoClone) {
 		clone(dir_path, src.Repo)
@@ -248,9 +248,9 @@ func UpdateSrc(_ *cli.Context) error {
 }
 
 func init() {
-	ZSH_COMP_DIR = filepath.Join(GPMW_HOME, "etc", "zsh", "Completion")
+	ZSH_COMP_DIR = filepath.Join(PAC_HOME, "etc", "zsh", "Completion")
 	InitDir(ZSH_COMP_DIR)
-	ZSH_SOURCE_DIR = filepath.Join(GPMW_HOME, "etc", "zsh", "src")
+	ZSH_SOURCE_DIR = filepath.Join(PAC_HOME, "etc", "zsh", "src")
 	InitDir(ZSH_SOURCE_DIR)
 	command := cli.Command{
 		Name:  "src",

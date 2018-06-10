@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	GPMW_ETC_DIR   string
+	PAC_ETC_DIR    string
 	BREW_FILE_PATH string
 )
 
@@ -99,7 +99,7 @@ func InstallBrew(_ *cli.Context) error {
 	}
 	defer os.Chdir(prev)
 
-	os.Chdir(GPMW_ETC_DIR)
+	os.Chdir(PAC_ETC_DIR)
 
 	err = exec.Command("brew", "bundle").Run()
 	if err != nil {
@@ -109,9 +109,9 @@ func InstallBrew(_ *cli.Context) error {
 }
 
 func init() {
-	GPMW_ETC_DIR = filepath.Join(GPMW_HOME, "etc")
-	InitDir(GPMW_ETC_DIR)
-	BREW_FILE_PATH = filepath.Join(GPMW_ETC_DIR, "Brewfile")
+	PAC_ETC_DIR = filepath.Join(PAC_HOME, "etc")
+	InitDir(PAC_ETC_DIR)
+	BREW_FILE_PATH = filepath.Join(PAC_ETC_DIR, "Brewfile")
 
 	command := cli.Command{
 		Name:  "brew",

@@ -6,20 +6,20 @@ import (
 	"path/filepath"
 )
 
-func GetGpmwConfig() string {
+func GetPacConfig() string {
 	xdg_config_home := os.Getenv("XDG_CONFIG_HOME")
 	if xdg_config_home == "" {
 		xdg_config_home = filepath.Join(os.Getenv("HOME"), ".config")
 	}
-	return filepath.Join(xdg_config_home, "gpmw", "config.toml")
+	return filepath.Join(xdg_config_home, "pac", "config.toml")
 }
 
-func GetGpmwHome() string {
+func GetPacHome() string {
 	xdg_cache_home := os.Getenv("XDG_CACHE_HOME")
 	if xdg_cache_home == "" {
 		xdg_cache_home = filepath.Join(os.Getenv("HOME"), ".cache")
 	}
-	return filepath.Join(xdg_cache_home, "gpmw")
+	return filepath.Join(xdg_cache_home, "pac")
 }
 
 func InitDir(path string) {
@@ -32,7 +32,7 @@ func InitDir(path string) {
 
 func GetRepoPath(repo string) string {
 	// TODO: it corresponds to other than github.com
-	return filepath.Join(GPMW_HOME, "src", "github.com", repo)
+	return filepath.Join(PAC_HOME, "src", "github.com", repo)
 }
 
 func RmIfExist(path string) (err error) {

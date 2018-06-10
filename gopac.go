@@ -28,8 +28,8 @@ func install_go(pkg string, isFin chan bool, wg *sync.WaitGroup) {
 }
 
 func InstallGo(_ *cli.Context) {
-	os.Setenv("GOPATH", GPMW_HOME)
-	os.Setenv("GOBIN", filepath.Join(GPMW_HOME, "bin"))
+	os.Setenv("GOPATH", PAC_HOME)
+	os.Setenv("GOBIN", filepath.Join(PAC_HOME, "bin"))
 
 	wg := new(sync.WaitGroup)
 	isFin := make(chan bool, len(CONFIG.Go.Repos))

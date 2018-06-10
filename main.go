@@ -7,18 +7,18 @@ import (
 )
 
 var (
-	GPMW_HOME = GetGpmwHome()
-	APP       = cli.NewApp()
-	CONFIG    = *LoadConf(GetGpmwConfig())
+	PAC_HOME = GetPacHome()
+	APP      = cli.NewApp()
+	CONFIG   = *LoadConf(GetPacConfig())
 )
 
 func initialize(_ *cli.Context) error {
-	InitDir(GPMW_HOME)
+	InitDir(PAC_HOME)
 	return nil
 }
 
 func main() {
-	APP.Name = "gpmw"
+	APP.Name = "pac"
 	APP.Usage = "Package Manager Wrapper"
 	APP.Version = "0.0.1"
 	APP.Before = initialize
