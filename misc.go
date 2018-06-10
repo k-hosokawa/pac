@@ -21,3 +21,8 @@ func InitDir(path string) {
 		}
 	}
 }
+
+func GetRepoPath(repo string) string {
+	// TODO: it corresponds to other than github.com
+	return filepath.Join(GPMW_HOME, "src", "github.com", repo)
+}

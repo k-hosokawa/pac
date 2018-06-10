@@ -94,16 +94,14 @@ func install_bin(dir_path string, cmd *string) {
 	}
 }
 
-func install_src(
-	src SrcPkg,
-	isFin chan bool,
-	wg *sync.WaitGroup) {
+func install_src(src SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
 	fmt.Println(src.Repo)
 	if src.OnOs != nil {
 		if *(src.OnOs) != runtime.GOOS {
+			isFin <- true
 			return
 		}
 	}
@@ -138,8 +136,57 @@ func InstallSrc(_ *cli.Context) error {
 	return nil
 }
 
-// TODO
+func check_update(repo_path string) bool {
+	prev, err := filepath.Abs(".")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer os.Chdir(prev)
+
+	os.Chdir(repo_path)
+	out, err := exec.Command("git", "pull").Output()
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	if string(out) == "Already up to date.\n" {
+		return false
+	} else {
+		return true
+	}
+}
+
+func update_src(src SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
+	defer wg.Done()
+	_os := src.OnOs != nil && *(src.OnOs) != runtime.GOOS
+	_freeze := src.Freeze != nil && *(src.Freeze)
+	_clone := src.DoClone != nil && !*(src.DoClone)
+	if _os || _freeze || _clone {
+		isFin <- true
+		return
+	}
+	repo_path := GetRepoPath(src.Repo)
+	if check_update(repo_path) {
+		if src.Build != nil {
+			build(repo_path, src.Build, src.BuildEnv)
+		}
+		fmt.Printf("%-50s %s\n", src.Repo, "Update !!")
+	} else {
+		fmt.Printf("%-50s %s\n", src.Repo, "not update")
+	}
+	isFin <- true
+}
+
 func UpdateSrc(_ *cli.Context) error {
+	wg := new(sync.WaitGroup)
+	isFin := make(chan bool, len(CONFIG.Src.Pkg))
+	for _, src := range CONFIG.Src.Pkg {
+		wg.Add(1)
+		update_src(src, isFin, wg)
+	}
+	wg.Wait()
+	close(isFin)
+	fmt.Println("Updated Packages from Source")
 	return nil
 }
 
