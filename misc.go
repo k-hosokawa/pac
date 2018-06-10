@@ -26,3 +26,10 @@ func GetRepoPath(repo string) string {
 	// TODO: it corresponds to other than github.com
 	return filepath.Join(GPMW_HOME, "src", "github.com", repo)
 }
+
+func RmIfExist(path string) (err error) {
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		err = os.Remove(path)
+	}
+	return err
+}

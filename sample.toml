@@ -53,43 +53,54 @@ repos = [
 
 [src]
 [[src.pkg]]
-repo = "simonwhitaker/gibo"
-
-[[src.pkg]]
 repo = "b4b4r07/zsh-vimode-visual"
+onZshSource = "zsh-vimode-visual.zsh"
 
 [[src.pkg]]
 repo = "zsh-users/zsh-completions"
+onZshComp = "src"
 
 [[src.pkg]]
 repo = "zsh-users/zsh-syntax-highlighting"
+onZshSource = "zsh-syntax-highlighting.zsh"
 
 [[src.pkg]]
 repo = "b4b4r07/enhancd"
+onZshSource = "init.sh"
 
 [[src.pkg]]
 repo = "Valodim/zsh-curl-completion"
+onZshComp = "."
 
 [[src.pkg]]
 repo = "b4b4r07/zsh-gomi"
+onCmd = "bin/gomi"
+onZshComp = "src"
 
 [[src.pkg]]
 repo = "b4b4r07/zsh-history"
+build = ["make"]
+onZshSource = "init.zsh"
+onCmd = "zhist"
 
-[[src.pkg]]
-repo = "marzocchi/zsh-notify"
+# [[src.pkg]]
+# repo = "marzocchi/zsh-notify"
 
 [[src.pkg]]
 repo = "b4b4r07/emoji-cli"
+onZshSource = "emoji-cli.zsh"
 
 [[src.pkg]]
 repo = "mrowa44/emojify"
+onCmd = "emojify"
 
 [[src.pkg]]
 repo = "simonwhitaker/gibo"
+onCmd = "gibo"
 
 [[src.pkg]]
 repo = "Fakerr/git-recall"
+onCmd = "git-recall"
 
 [[src.pkg]]
 repo = "jhawthorn/fzy"

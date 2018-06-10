@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,19 +13,26 @@ import (
 	"github.com/urfave/cli"
 )
 
+var (
+	ZSH_COMP_DIR   string
+	ZSH_SOURCE_DIR string
+)
+
 type SrcConfig struct {
 	Pkg []SrcPkg `toml:pkg`
 }
 
 type SrcPkg struct {
-	Repo     string    `toml:repo`
-	DoClone  *bool     `toml:doClone`
-	OnOs     *string   `toml:onOs`
-	Freeze   *bool     `toml:freeze`
-	Build    *[]string `toml:build`
-	BuildEnv *[]string `toml:buildEnv`
-	OnApp    *string   `toml:onApp`
-	OnCmd    *string   `toml:onCmd`
+	Repo        string    `toml:repo`
+	DoClone     *bool     `toml:doClone`
+	OnOs        *string   `toml:onOs`
+	Freeze      *bool     `toml:freeze`
+	Build       *[]string `toml:build`
+	BuildEnv    *[]string `toml:buildEnv`
+	OnApp       *string   `toml:onApp`
+	OnCmd       *string   `toml:onCmd`
+	OnZshSource *string   `toml:onZshSource`
+	OnZshComp   *string   `toml:OnZshComp`
 }
 
 func clone(dir_path string, repo string) {
@@ -82,14 +90,49 @@ func install_bin(dir_path string, cmd *string) {
 		fmt.Println(err)
 	}
 	sympath := filepath.Join(GPMW_HOME, "bin", filepath.Base(*cmd))
-	if _, err := os.Stat(sympath); !os.IsNotExist(err) {
-		err = os.Remove(sympath)
-		if err != nil {
-			fmt.Println(nil)
-		}
+	if err = RmIfExist(sympath); err != nil {
+		fmt.Println(nil)
 	}
 
 	if err := os.Symlink(bin_path, sympath); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func install_zsh_completion(repo string, comp_path string) {
+	dist := filepath.Join(ZSH_COMP_DIR, filepath.Base(repo))
+	comp_path = filepath.Join(GetRepoPath(repo), comp_path)
+	if _, err := os.Stat(dist); !os.IsNotExist(err) {
+		return
+	}
+	if f, err := os.Stat(comp_path); err != nil {
+		fmt.Println(err)
+	} else {
+		if !f.IsDir() {
+			log.Fatalln("onZshComp must be directory")
+			return
+		}
+	}
+
+	if err := os.Symlink(comp_path, dist); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func install_zsh_source(repo string, source_path string) {
+	dist := filepath.Join(ZSH_SOURCE_DIR, filepath.Base(repo)+".zsh")
+	if _, err := os.Stat(dist); !os.IsNotExist(err) {
+		return
+	}
+
+	source_path, err := filepath.Abs(
+		filepath.Join(GetRepoPath(repo), source_path),
+	)
+	if err != nil {
+		fmt.Println(nil)
+	}
+
+	if err = os.Symlink(source_path, dist); err != nil {
 		fmt.Println(err)
 	}
 }
@@ -120,6 +163,15 @@ func install_src(src SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
 	if src.OnCmd != nil {
 		install_bin(dir_path, src.OnCmd)
 	}
+
+	if src.OnZshComp != nil {
+		install_zsh_completion(src.Repo, *(src.OnZshComp))
+	}
+
+	if src.OnZshSource != nil {
+		install_zsh_source(src.Repo, *(src.OnZshSource))
+	}
+
 	isFin <- true
 }
 
@@ -191,6 +243,10 @@ func UpdateSrc(_ *cli.Context) error {
 }
 
 func init() {
+	ZSH_COMP_DIR = filepath.Join(GPMW_HOME, "etc", "zsh", "Completion")
+	InitDir(ZSH_COMP_DIR)
+	ZSH_SOURCE_DIR = filepath.Join(GPMW_HOME, "etc", "zsh", "src")
+	InitDir(ZSH_SOURCE_DIR)
 	command := cli.Command{
 		Name:  "src",
 		Usage: "Install or Update Packages from source",
