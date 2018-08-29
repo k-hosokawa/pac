@@ -13,11 +13,6 @@ import (
 	"github.com/urfave/cli"
 )
 
-var (
-	ZSH_COMP_DIR   string
-	ZSH_SOURCE_DIR string
-)
-
 type SrcConfig struct {
 	Pkg []SrcPkg `toml:pkg`
 }
@@ -50,11 +45,11 @@ func clone(dir_path string, repo string) {
 }
 
 func convert_env(env_arr *[]string, package_path string) (new_arr []string) {
+	r := strings.NewReplacer(
+		"__PAC_HOME__", PAC_HOME,
+		"__PACKAGE_HOME__", package_path,
+	)
 	for _, env := range *env_arr {
-		r := strings.NewReplacer(
-			"__PAC_HOME__", PAC_HOME,
-			"__PACKAGE_HOME__", package_path,
-		)
 		new_arr = append(new_arr, r.Replace(env))
 	}
 	return
@@ -142,39 +137,39 @@ func install_zsh_source(repo string, source_path string) {
 	}
 }
 
-func install_src(src SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
+func install_src(pkg SrcPkg, isFin chan bool, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
-	fmt.Println(src.Repo)
-	if src.OnOs != nil {
-		if *(src.OnOs) != runtime.GOOS {
+	fmt.Println(pkg.Repo)
+	if pkg.OnOs != nil {
+		if *(pkg.OnOs) != runtime.GOOS {
 			isFin <- true
 			return
 		}
 	}
-	dir_path := filepath.Join(PAC_HOME, "src", "github.com", src.Repo)
+	dir_path := filepath.Join(PAC_HOME, "src", "github.com", pkg.Repo)
 
-	if src.DoClone == nil || *(src.DoClone) {
-		clone(dir_path, src.Repo)
+	if pkg.DoClone == nil || *(pkg.DoClone) {
+		clone(dir_path, pkg.Repo)
 	} else {
 		InitDir(dir_path)
 	}
 
-	if src.Build != nil {
-		build(dir_path, src.Build, src.BuildEnv)
+	if pkg.Build != nil {
+		build(dir_path, pkg.Build, pkg.BuildEnv)
 	}
 
-	if src.OnCmd != nil {
-		install_bin(dir_path, src.OnCmd, src.RenameTo)
+	if pkg.OnCmd != nil {
+		install_bin(dir_path, pkg.OnCmd, pkg.RenameTo)
 	}
 
-	if src.OnZshComp != nil {
-		install_zsh_completion(src.Repo, *(src.OnZshComp))
+	if pkg.OnZshComp != nil {
+		install_zsh_completion(pkg.Repo, *(pkg.OnZshComp))
 	}
 
-	if src.OnZshSource != nil {
-		install_zsh_source(src.Repo, *(src.OnZshSource))
+	if pkg.OnZshSource != nil {
+		install_zsh_source(pkg.Repo, *(pkg.OnZshSource))
 	}
 
 	isFin <- true
@@ -248,10 +243,6 @@ func UpdateSrc(_ *cli.Context) error {
 }
 
 func init() {
-	ZSH_COMP_DIR = filepath.Join(PAC_HOME, "etc", "zsh", "Completion")
-	InitDir(ZSH_COMP_DIR)
-	ZSH_SOURCE_DIR = filepath.Join(PAC_HOME, "etc", "zsh", "src")
-	InitDir(ZSH_SOURCE_DIR)
 	command := cli.Command{
 		Name:  "src",
 		Usage: "Install or Update Packages from source",

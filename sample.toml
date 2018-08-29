@@ -44,12 +44,14 @@ pkgs = [
     args = ["--HEAD"]
 
 [go]
-repos = [
-    "k-hosokawa/powerline-go",
-    "motemen/ghq",
-    "peco/peco",
-    "mattn/memo",
-]
+[[go.pkgs]]
+    repo = "k-hosokawa/powerline-go",
+[[go.pkgs]]
+    repo = "motemen/ghq",
+[[go.pkgs]]
+    repo = "peco/peco",
+[[go.pkgs]]
+    repo = "mattn/memo",
 
 [src]
 [[src.pkg]]

@@ -11,18 +11,31 @@ import (
 )
 
 type GoConfig struct {
-	Repos []string `toml:repos`
+	Pkgs []GoPkg `toml:pkgs`
 }
 
-func install_go(pkg string, isFin chan bool, wg *sync.WaitGroup) {
+type GoPkg struct {
+	Repo        string  `toml:repo`
+	OnZshSource *string `toml:onZshSource`
+	OnZshComp   *string `toml:onZshComp`
+}
+
+func install_go(pkg GoPkg, isFin chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	// install
-	fmt.Println(pkg)
-	cmd := exec.Command("go", "get", "-u", "github.com/"+pkg)
+	fmt.Println(pkg.Repo)
+	cmd := exec.Command("go", "get", "-u", "github.com/"+pkg.Repo)
 	cmd.Env = os.Environ()
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println(err)
+	}
+	if pkg.OnZshComp != nil {
+		install_zsh_completion(pkg.Repo, *(pkg.OnZshComp))
+	}
+
+	if pkg.OnZshSource != nil {
+		install_zsh_source(pkg.Repo, *(pkg.OnZshSource))
 	}
 	isFin <- true
 }
@@ -32,8 +45,8 @@ func InstallGo(_ *cli.Context) {
 	os.Setenv("GOBIN", filepath.Join(PAC_HOME, "bin"))
 
 	wg := new(sync.WaitGroup)
-	isFin := make(chan bool, len(CONFIG.Go.Repos))
-	for _, pkg := range CONFIG.Go.Repos {
+	isFin := make(chan bool, len(CONFIG.Go.Pkgs))
+	for _, pkg := range CONFIG.Go.Pkgs {
 		wg.Add(1)
 		go install_go(pkg, isFin, wg)
 	}
