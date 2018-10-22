@@ -11,6 +11,7 @@ PAC_URL="${REPO}/v${VERSION}/${PAC_TARBALL}"
 
 ${PREFIX=/usr/local/bin}
 
+
 curl -L -O "$PAC_URL" 
 tar xzvf "$PAC_TARBALL "-C "$PREFIX"
 chmod +x "${PREFIX}/pac"

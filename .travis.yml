@@ -6,5 +6,8 @@ install:
     curl -sL https://raw.githubusercontent.com/k-hosokawa/pac/master/install
 
 script:
-    pac src install
+    curl -L -O https://raw.githubusercontent.com/k-hosokawa/pac/master/sample.toml
+    mkdir -p ~/.config/pac/
+    mv sample.toml ~/.config/pac/config.toml
+    /usr/local/bin/pac src install
 
