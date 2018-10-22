@@ -1,0 +1,10 @@
+language: c
+os:
+    - linux
+
+install:
+    curl -sL https://raw.githubusercontent.com/k-hosokawa/pac/master/install
+
+script:
+    pac src install
+
