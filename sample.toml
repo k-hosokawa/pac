@@ -39,13 +39,7 @@ pkgs = [
     pkg = "zsh"
     args = ["--disable-etcdir"]
 
-[[brew.optionalPkgs]]
-    pkg = "cema-sp/tap/alacritty"
-    args = ["--HEAD"]
-
 [go]
-[[go.pkgs]]
-    repo = "k-hosokawa/powerline-go",
 [[go.pkgs]]
     repo = "motemen/ghq",
 [[go.pkgs]]
