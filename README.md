@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/k-hosokawa/pac.svg?branch=master)](https://travis-ci.com/k-hosokawa/pac)
 # pac
 Go Package Manager Wrapper for homebrew, go get, and more. Inspired by zplug.
 
