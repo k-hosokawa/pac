@@ -1,0 +1,16 @@
+#!/bin/sh
+
+REPO="https://github.com/k-hosokawa/pac/releases/download"
+VERSION="1.0.0"
+
+PLATFORM=$(uname)
+ARCH="x86_64"
+
+PAC_TARBALL="pac_${VERSION}_${PLATFORM}_${ARCH}.tar.gz"
+PAC_URL="${REPO}/v${VERSION}/${PAC_TARBALL}"
+
+${PREFIX=/usr/local/bin}
+
+curl -L -O "$PAC_URL" 
+tar xzvf "$PAC_TARBALL "-C "$PREFIX"
+chmod +x "${PREFIX}/pac"
