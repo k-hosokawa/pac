@@ -9,9 +9,12 @@ ARCH="x86_64"
 PAC_TARBALL="pac_${VERSION}_${PLATFORM}_${ARCH}.tar.gz"
 PAC_URL="${REPO}/v${VERSION}/${PAC_TARBALL}"
 
-${PREFIX=/usr/local/bin}
+BIN_DIR="${PREFIX-/usr/local}/bin"
+TMP_DIR="/tmp/pac-install"
+mkdir -p $BIN_DIR $TMP_DIR
 
+curl -L $PAC_URL -o "${TMP_DIR}/${PAC_TARBALL}"
+tar xzvf "${TMP_DIR}/${PAC_TARBALL}" -C "${TMP_DIR}"
+install -m 755 "${TMP_DIR}/pac" "${BIN_DIR}/pac"
 
-curl -L -O "$PAC_URL" 
-tar xzvf "$PAC_TARBALL "-C "$PREFIX"
-chmod +x "${PREFIX}/pac"
+rm -rf "${TMP_DIR}"
