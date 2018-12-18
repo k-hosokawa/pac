@@ -2,6 +2,7 @@
 
 REPO="https://github.com/k-hosokawa/pac/releases/download"
 VERSION="1.0.0"
+SAMPLE_CONFIG_FILE="https://raw.githubusercontent.com/k-hosokawa/pac/master/sample.toml"
 
 PLATFORM=$(uname)
 ARCH="x86_64"
@@ -16,5 +17,13 @@ mkdir -p $BIN_DIR $TMP_DIR
 curl -L $PAC_URL -o "${TMP_DIR}/${PAC_TARBALL}"
 tar xzvf "${TMP_DIR}/${PAC_TARBALL}" -C "${TMP_DIR}"
 install -m 755 "${TMP_DIR}/pac" "${BIN_DIR}/pac"
+
+CONFIG_DIR="${XDG_CONFIG_HOME-${HOME}/.config}/pac"
+
+CONFIG_PATH="${CONFIG_DIR}/config.toml"
+if [ ! -f $CONFIG_PATH ]; then
+  mkdir -p $CONFIG_DIR
+  curl -L $SAMPLE_CONFIG_FILE -o $CONFIG_PATH
+fi
 
 rm -rf "${TMP_DIR}"
