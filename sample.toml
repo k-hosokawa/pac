@@ -41,11 +41,11 @@ pkgs = [
 
 [go]
 [[go.pkgs]]
-    repo = "motemen/ghq",
+    repo = "motemen/ghq"
 [[go.pkgs]]
-    repo = "peco/peco",
+    repo = "peco/peco"
 [[go.pkgs]]
-    repo = "mattn/memo",
+    repo = "mattn/memo"
 
 [src]
 [[src.pkg]]
