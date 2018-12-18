@@ -6,4 +6,5 @@ install:
     curl -sL https://raw.githubusercontent.com/k-hosokawa/pac/master/install | sudo bash
 
 script:
+    /usr/local/bin/pac go install
     /usr/local/bin/pac src install
